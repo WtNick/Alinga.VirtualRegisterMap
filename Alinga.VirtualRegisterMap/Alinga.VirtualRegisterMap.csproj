@@ -2,9 +2,40 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>Virtual Register Map</Title>
+    <Authors>Nick Witvrouwen</Authors>
+    <Description>Access object instances through a virtual register map</Description>
+    <PackageProjectUrl>https://github.com/WtNick/Alinga.VirtualRegisterMap</PackageProjectUrl>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
+    <PackageIcon>vmmapicon.png</PackageIcon>
+    <RepositoryUrl>https://github.com/WtNick/Alinga.VirtualRegisterMap</RepositoryUrl>
+    <PackageOutputPath>nuget\</PackageOutputPath>
+    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+	  <Version>1.1</Version>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="nuget\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE.txt">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\readme.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+	  <None Include="..\vmmapicon.png">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
+	  </None>
+  </ItemGroup>
 
 </Project>
