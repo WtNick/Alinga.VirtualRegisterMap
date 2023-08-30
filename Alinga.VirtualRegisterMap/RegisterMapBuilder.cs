@@ -1,4 +1,8 @@
-﻿namespace Alinga.VirtualRegisterMap;
+﻿using System.Collections.Concurrent;
+using System.Linq.Expressions;
+using System.Reflection;
+
+namespace Alinga.VirtualRegisterMap;
 
 public static class RegisterMapBuilder
 {
@@ -52,4 +56,48 @@ public static class RegisterMapBuilder
     /// <typeparam name="TContext"></typeparam>
     /// <returns></returns>
     public static IRegisterMap<TContext> CreateForContext<TContext>() => ContextMapLoader<TContext>.Map;
+
+    /// <summary>
+    /// Create for a non generic object for an explicit type.
+    /// </summary>
+    /// <param name="t">target type for the map. this must be compatible with the object</param>
+    /// <param name="obj">object captured in the map</param>
+    /// <returns></returns>
+    public static IRegisterMap CreateFromObject(Type t, object obj) => NonGenericMapBuildHelper.Build(t, obj);
+
+    static class NonGenericMapBuildHelper
+    {
+        class EmptyRegmap : IRegisterMap
+        {
+            public static IRegisterMap Singleton { get; } = new EmptyRegmap();
+            private EmptyRegmap() { }
+            public void Read(uint offset, Span<byte> output, IORequestFlags flags) { }
+            public void Write(uint offset, ReadOnlySpan<byte> input, IORequestFlags flags) { }
+        }
+
+        class Internal {
+            public static IRegisterMap CreateMap<T>(object value)
+            {
+                if (value is T castvalue)
+                {
+                    return CreateForContext<T>().Capture(castvalue);
+                }
+                return EmptyRegmap.Singleton;
+            }
+        }
+
+        static MethodInfo createmap_mi = typeof(Internal).GetMethod(nameof(Internal.CreateMap), BindingFlags.Static | BindingFlags.Public);
+
+        static ConcurrentDictionary<Type, Func<object, IRegisterMap>> activation_cache { get; } = new();
+        public static IRegisterMap Build(Type type, object obj)
+        {
+            var fn = activation_cache.GetOrAdd(type, (t) =>
+            {
+                var p_obj = Expression.Parameter(typeof(object));
+                var fn = Expression.Lambda<Func<object, IRegisterMap>>(Expression.Call(null, createmap_mi.MakeGenericMethod(type), p_obj), p_obj).Compile();
+                return fn;
+            });
+            return fn(obj);
+        }
+    }
 }

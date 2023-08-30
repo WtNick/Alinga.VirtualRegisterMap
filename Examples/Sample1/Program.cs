@@ -78,7 +78,9 @@ internal class Program
         var system = new MyDevice();
 
         // create a register map interface to this device
-        var map = RegisterMapBuilder.CreateFromObject(system);
+        var map = RegisterMapBuilder.CreateFromObject(typeof(MyDevice), system);
+
+        var map2 = RegisterMapBuilder.CreateFromObject(typeof(MyDevice), system);
 
         // write to moduleA
         map.Write<UInt32>(0x100, 0x12345678);
