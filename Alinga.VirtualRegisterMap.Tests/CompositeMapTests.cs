@@ -70,13 +70,13 @@ public class CompositeMapWrite
     [Test]
     public void WriteToTinyRegion()
     {
-        int region0=-1;
-        int region1=-1;
-        int region2=-1;
+        int region0 = -1;
+        int region1 = -1;
+        int region2 = -1;
 
         var map = new CompositeRegisterMap();
-        map.Insert<byte>(100, 1, addr => 0, (a, v) => region0= v);
-        map.Insert<byte>(101, 1, addr => 0, (a, v) => region1= v);
+        map.Insert<byte>(100, 1, addr => 0, (a, v) => region0 = v);
+        map.Insert<byte>(101, 1, addr => 0, (a, v) => region1 = v);
         // gap at 102
         map.Insert<byte>(103, 1, addr => 0, (a, v) => region2 = v);
 

@@ -31,14 +31,15 @@ namespace Alinga.VirtualRegisterMap
             if (mi == null)
             {
                 throw new Exception($"internal error: static method {methodname} not found on type {typeof(Type)}");
-            } else
+            }
+            else
             {
                 return mi.GetParameters();
             }
         }
     }
 
-    internal class CapturedDeferredContextRegisterMap<TContext, TChildContext> : IRegisterMap<TContext> 
+    internal class CapturedDeferredContextRegisterMap<TContext, TChildContext> : IRegisterMap<TContext>
     {
         Func<TContext, TChildContext> Fetch { get; }
         IRegisterMap<TChildContext> Map { get; }
@@ -73,9 +74,9 @@ namespace Alinga.VirtualRegisterMap
         /// <param name="obj"></param>
         /// <param name="address"></param>
         /// <param name="value"></param>
-        static void defaultsetter<TValue>(TContext obj, uint address, TValue value) where TValue: unmanaged
+        static void defaultsetter<TValue>(TContext obj, uint address, TValue value) where TValue : unmanaged
         { }
-        
+
 
         /// <summary>
         /// Lazy created context aware map for the <see cref="TContext"/> type
@@ -175,7 +176,7 @@ namespace Alinga.VirtualRegisterMap
                 targettype = Enum.GetUnderlyingType(pi.PropertyType);
             }
 
-            switch(Type.GetTypeCode(targettype))
+            switch (Type.GetTypeCode(targettype))
             {
                 case TypeCode.Byte: return RegisterMapBuilder.Register(BuildRegisterHandler<byte>(regattr, pi));
                 case TypeCode.SByte: return RegisterMapBuilder.Register(BuildRegisterHandler<sbyte>(regattr, pi));
@@ -219,7 +220,7 @@ namespace Alinga.VirtualRegisterMap
             }
 
             // get all public methods tagged with 'RegisterAttribute'
-            foreach(var mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
+            foreach (var mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 if (mi.GetCustomAttribute<RegisterAttribute>() is RegisterAttribute regattr)
                 {
@@ -245,8 +246,8 @@ namespace Alinga.VirtualRegisterMap
 
                         continue;
                     }
-                    
-                    
+
+
                     if (parameters.Length != 1)
                     {
                         throw new Exception("Invalid method signature. Callable method must have 1 parameter");
@@ -288,7 +289,8 @@ namespace Alinga.VirtualRegisterMap
             if (src.Length > dst.Length)
             {
                 src[..dst.Length].CopyTo(dst);
-            } else
+            }
+            else
             {
                 src.CopyTo(dst);
             }
@@ -296,7 +298,7 @@ namespace Alinga.VirtualRegisterMap
             return result;
         }
 
-        static IRegisterWrite<TContext> CreateMethodMap<TParameter>(UInt32 returnvalue, MethodInfo setter_mi) where TParameter:unmanaged
+        static IRegisterWrite<TContext> CreateMethodMap<TParameter>(UInt32 returnvalue, MethodInfo setter_mi) where TParameter : unmanaged
         {
             var valueParam = Expression.Parameter(typeof(TParameter));
 
@@ -315,8 +317,8 @@ namespace Alinga.VirtualRegisterMap
 
         static bool IsMatch(ParameterInfo[] p1, ParameterInfo[] p2)
         {
-            if (p1.Length!=p2.Length) return false;
-            return p1.Zip(p2).All(t=>IsMatch(t.First,t.Second));
+            if (p1.Length != p2.Length) return false;
+            return p1.Zip(p2).All(t => IsMatch(t.First, t.Second));
         }
     }
 }

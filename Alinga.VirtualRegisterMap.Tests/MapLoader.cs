@@ -42,7 +42,8 @@ public class NonGenericMapLoader
         [Register(0x00, length: 1)] public byte Value { get; set; }
     }
 
-    [Test] public void CheckProperty()
+    [Test]
+    public void CheckProperty()
     {
         var tc = new TestClass();
         var map = RegisterMapBuilder.CreateFromObject(typeof(TestClass), tc);

@@ -6,9 +6,9 @@ namespace Alinga.VirtualRegisterMap;
 
 public static class RegisterMapBuilder
 {
-    static readonly object Default = new ();
-        
-    static Dictionary<Type, object> maps = new ();
+    static readonly object Default = new();
+
+    static Dictionary<Type, object> maps = new();
     internal static void Register(Type t, object map)
     {
         maps[t] = map;
@@ -38,7 +38,7 @@ public static class RegisterMapBuilder
             maps[tcontext] = Default;
         }
         return map;
-        
+
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public static class RegisterMapBuilder
     /// <param name="content"></param>
     /// <returns></returns>
     public static IRegisterMap CreateFromObject<TContent>(TContent content) => ContextMapLoader<TContent>.Map.Capture(content);
-    
+
     /// <summary>
     /// Get the context aware register map for a given type.
     /// </summary>
@@ -75,7 +75,8 @@ public static class RegisterMapBuilder
             public void Write(uint offset, ReadOnlySpan<byte> input, IORequestFlags flags) { }
         }
 
-        class Internal {
+        class Internal
+        {
             public static IRegisterMap CreateMap<T>(object value)
             {
                 if (value is T castvalue)
@@ -86,7 +87,7 @@ public static class RegisterMapBuilder
             }
         }
 
-        static MethodInfo createmap_mi = typeof(Internal).GetMethod(nameof(Internal.CreateMap), BindingFlags.Static | BindingFlags.Public);
+        static MethodInfo createmap_mi = typeof(Internal).GetMethod(nameof(Internal.CreateMap), BindingFlags.Static | BindingFlags.Public) ?? throw new InvalidOperationException("CreateMap method not found");
 
         static ConcurrentDictionary<Type, Func<object, IRegisterMap>> activation_cache { get; } = new();
         public static IRegisterMap Build(Type type, object obj)

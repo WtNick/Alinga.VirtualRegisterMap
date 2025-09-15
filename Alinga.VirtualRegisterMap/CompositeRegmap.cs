@@ -140,10 +140,10 @@ namespace Alinga.VirtualRegisterMap
                     // we still have some data to process in this block
                     var lengthtoendofsection = b.Top - address;
                     var processlength = Math.Min(lengthtoendofsection, length);
-                    
+
                     yield return (b.Content, address - b.Address, (int)processlength);
 
-                    length-= (int)processlength;
+                    length -= (int)processlength;
                     address = (UInt32)(address + processlength);
                 }
                 index++;
@@ -161,7 +161,7 @@ namespace Alinga.VirtualRegisterMap
         }
     }
 
-    internal abstract class CompositeRegisterMapReaderBase<TBlockContent,TContext> : RegisterMapCompositor<TBlockContent, TContext>, IRegisterRead<TContext> where TBlockContent : class
+    internal abstract class CompositeRegisterMapReaderBase<TBlockContent, TContext> : RegisterMapCompositor<TBlockContent, TContext>, IRegisterRead<TContext> where TBlockContent : class
     {
         protected abstract void Contentread(TContext context, TBlockContent content, UInt32 offset, Span<byte> output, IORequestFlags flags);
 
@@ -176,7 +176,7 @@ namespace Alinga.VirtualRegisterMap
 
         public void Read(TContext context, uint address, Span<byte> output, IORequestFlags flags)
         {
-            foreach(var (block, offset, length) in GetBlocks(address,output.Length))
+            foreach (var (block, offset, length) in GetBlocks(address, output.Length))
             {
                 if (block == null)
                 {
@@ -201,7 +201,7 @@ namespace Alinga.VirtualRegisterMap
         {
             Interlocked.Increment(ref RegIODiagnostics.UnmappedAccessWriteCounter);
         }
-       
+
         public void Write(TContext context, uint address, ReadOnlySpan<byte> input, IORequestFlags flags)
         {
             foreach (var (block, offset, length) in GetBlocks(address, input.Length))
@@ -224,7 +224,7 @@ namespace Alinga.VirtualRegisterMap
 
     internal class DummyContext { }
 
-    
+
     internal class CompositeRegisterMapReader : CompositeRegisterMapReaderBase<IRegisterRead, DummyContext?>
     {
         protected override void Contentread(DummyContext? _, IRegisterRead content, UInt32 offset, Span<byte> output, IORequestFlags flags)
@@ -262,8 +262,8 @@ namespace Alinga.VirtualRegisterMap
     /// </summary>
     public class CompositeRegisterMap : IRegisterMap
     {
-        readonly CompositeRegisterMapReader readmap = new ();
-        readonly CompositeRegisterMapWriter writemap = new ();
+        readonly CompositeRegisterMapReader readmap = new();
+        readonly CompositeRegisterMapWriter writemap = new();
 
         /// <summary>
         /// Insert a register map at the specified address range
@@ -346,7 +346,7 @@ namespace Alinga.VirtualRegisterMap
     {
         readonly CompositeRegisterMapReader<TContext> readmap = new();
         readonly CompositeRegisterMapWriter<TContext> writemap = new();
-        
+
         public void Read(TContext ctx, uint offset, Span<byte> output, IORequestFlags flags)
         {
             readmap.Read(ctx, offset, output, flags);
