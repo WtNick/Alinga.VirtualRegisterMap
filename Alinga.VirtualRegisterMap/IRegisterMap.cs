@@ -45,12 +45,12 @@ namespace Alinga.VirtualRegisterMap
     {
         public static void Write<T>(this IRegisterWrite map, UInt32 address, in T value) where T : unmanaged
         {
-            map.Write(address, MemoryMarshal.AsBytes(MemoryMarshal.CreateReadOnlySpan(ref Unsafe.AsRef(value), 1)), IORequestFlags.None);
+            map.Write(address, MemoryMarshal.AsBytes(MemoryMarshal.CreateReadOnlySpan(in value, 1)), IORequestFlags.None);
         }
         public static T Read<T>(this IRegisterRead map, UInt32 address) where T : unmanaged
         {
             T result = default;
-            var span = MemoryMarshal.AsBytes(MemoryMarshal.CreateSpan(ref Unsafe.AsRef(result), 1));
+            var span = MemoryMarshal.AsBytes(MemoryMarshal.CreateSpan(ref result, 1));
             map.Read(address, span, IORequestFlags.None);
             return result;
         }
@@ -63,13 +63,13 @@ namespace Alinga.VirtualRegisterMap
 
         public static void Write<TContext, T>(this IRegisterWrite<TContext> map, TContext context, UInt32 address, in T value) where T : unmanaged
         {
-            map.Write(context, address, MemoryMarshal.AsBytes(MemoryMarshal.CreateReadOnlySpan(ref Unsafe.AsRef(value), 1)), IORequestFlags.None);
+            map.Write(context, address, MemoryMarshal.AsBytes(MemoryMarshal.CreateReadOnlySpan(in value, 1)), IORequestFlags.None);
         }
 
         public static T Read<TContext, T>(this IRegisterRead<TContext> map, TContext context, UInt32 address) where T : unmanaged
         {
             T result = default;
-            var span = MemoryMarshal.AsBytes(MemoryMarshal.CreateSpan(ref Unsafe.AsRef(result), 1));
+            var span = MemoryMarshal.AsBytes(MemoryMarshal.CreateSpan(ref result, 1));
             map.Read(context, address, span, IORequestFlags.None);
             return result;
         }
@@ -98,7 +98,7 @@ namespace Alinga.VirtualRegisterMap
                 }
                 this.map = map;
                 this.context = context;
-                
+
             }
 
             public void Read(uint offset, Span<byte> output, IORequestFlags flags) => map.Read(context, offset, output, flags);
@@ -106,7 +106,7 @@ namespace Alinga.VirtualRegisterMap
             public void Write(uint offset, ReadOnlySpan<byte> input, IORequestFlags flags) => map.Write(context, offset, input, flags);
         }
 
-        
+
 
         private class CapturedContextRead<TContext> : IRegisterRead
         {

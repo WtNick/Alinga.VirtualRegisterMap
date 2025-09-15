@@ -10,7 +10,7 @@ namespace Alinga.VirtualRegisterMap
     {
         readonly Func<UInt32, T> getter;
         readonly Action<UInt32, T> setter;
-        public LambdaMap(Func<UInt32,T> getter, Action<uint, T> setter)
+        public LambdaMap(Func<UInt32, T> getter, Action<uint, T> setter)
         {
             this.getter = getter;
             this.setter = setter;
@@ -26,10 +26,10 @@ namespace Alinga.VirtualRegisterMap
         {
             var buf = output.Cast<T>();
 
-            for(int i = 0;i<buf.Length;i++)
+            for (int i = 0; i < buf.Length; i++)
             {
                 buf[i] = getter(address);
-                
+
                 if ((flags & IORequestFlags.NoAddressIncrement) == IORequestFlags.None)
                 {
                     address += (UInt32)Marshal.SizeOf<T>();

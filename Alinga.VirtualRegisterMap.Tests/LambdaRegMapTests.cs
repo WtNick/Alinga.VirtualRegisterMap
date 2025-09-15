@@ -8,9 +8,9 @@ public class LambdaRegMapTests
 {
     [Test]
     public void ByteAddressing_Constant()
-    { 
+    {
         var map = new LambdaMap<byte>(addr => 1);
-        
+
         Assert.That(map.Read<byte>(0), Is.EqualTo(1));
         Assert.That(map.Read<UInt16>(0), Is.EqualTo(0x0101));
 

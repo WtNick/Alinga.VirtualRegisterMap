@@ -49,7 +49,7 @@ public class MyModule
     [Register(0x00)] public UInt32 AProperty { get; set; }
 
     // registers can have any length. This is a 1 byte register
-    [Register(0x04, length:1)] public byte SingleByte { get; set; }
+    [Register(0x04, length: 1)] public byte SingleByte { get; set; }
 
 }
 
@@ -61,7 +61,7 @@ public class MyDevice
     [Register(0x00)] public UInt32 Reg0 { get; set; }
     [Register(0x04)] public UInt32 Reg1 { get; set; }
     [Register(0x08)] public UInt32 Reg2 { get; set; }
-    
+
     // map moduleA to offset 0x100
     [Register(0x100)] public MyModule ModuleA { get; } = new MyModule();
 
